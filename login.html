@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<title>Login - Homework Tracker</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<!-- 1. Load platform.js for polyfill support. -->
+    <script type="text/javascript" src="bower_components/platform/platform.js"></script>
+
+    <!-- 2. Use an HTML Import to bring in the element. -->
+	 <link rel="import" href="bower_components/font-roboto/roboto.html"/>
+    <link rel="import" href="bower_components/paper-elements/paper-elements.html"/>
+		<link rel="import" href="bower_components/core-style/core-style.html"/>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js"></script>
+<link rel="stylesheet" type="text/css" href="login.css" />
+
+</head>
+<body>
+	<paper-shadow class="login_center" z="3">
+		<h1>Homework Tracker</h1>
+		
+			<paper-input-decorator id="username_wrapper" label="Username" error = "Username is already taken" floatingLabel>
+				<input id="username" is="core-input">
+			</paper-input-decorator>
+		
+			<paper-input-decorator id="password_wrapper" label="Password" error = "Password is incorrect" floatingLabel>
+				<input type="password" id="password" is="core-input">
+			</paper-input-decorator>
+		
+		<div class="buttons">
+			<paper-button onclick="registerButton()" raised>Register</paper-button>
+			<paper-button onclick="loginButton()" raised>Login</paper-button>
+		</div>
+	</paper-shadow>
+</body>
+<script>
+	var username = document.getElementById('username');
+	var usernameWrapper = document.getElementById('username_wrapper');
+	var password = document.getElementById('password');
+	var passwordWrapper = document.getElementById('password_wrapper');
+	function loginButton() {
+		var hash = CryptoJS.SHA3(password.value);
+			 $.post("login.php",
+			  {
+				username:username.value,
+				password: hash.toString(CryptoJS.enc.Base64)
+			  },
+			  function(data,status){
+					if (data == "success")
+					{
+						document.location.href = "index.php";
+					}
+					else {
+						passwordWrapper.error = data;
+						passwordWrapper.isInvalid = 1;
+					}
+			  });
+	}
+	function registerButton() {
+		if (password.value.length < 7)
+		{
+			passwordWrapper.error = "Password must be at least 6 characters long";
+			passwordWrapper.isInvalid = 1;
+		}
+		else {
+			var hash = CryptoJS.SHA3(password.value);
+			 $.post("register.php",
+			  {
+				username:username.value,
+				password: hash.toString(CryptoJS.enc.Base64)
+			  },
+			  function(data,status){
+					if (data == "success")
+					{
+						document.location.href = "classes.php";
+					}
+					else {
+						passwordWrapper.error = data;
+						passwordWrapper.isInvalid = 1;
+					}
+			  });
+		}
+	}
+	
+	
+</script>

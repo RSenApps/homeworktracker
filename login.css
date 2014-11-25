@@ -1,0 +1,68 @@
+html
+{
+	font-family: RobotoDraft;
+	height:100%;
+}
+
+body
+{
+	margin:0; padding:0; height:100%; background-color: #3f51b5;
+}
+
+paper-button
+{
+	background: #1A237E ;
+	font-size:medium;
+	color: white;
+	width:45%;
+	display:inline-block;
+}
+
+h1 
+{
+	text-align:center;
+	color: #3f51b5;
+	font-size:x-large;
+}
+h2
+{
+	margin-top:20px; 
+	margin-left:15px;
+	font-style:italic;
+}
+h3
+{
+	display: inline-block; margin-left:10px; margin-right:10px; color:white; font-size:large;
+}
+p
+{
+	margin:20px;
+}
+paper-shadow.login_center {
+	width: 600px;
+    height: 300px;
+	padding: 100px;
+    background-color: #eeeeef;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	margin: auto;
+}
+div.card {
+	background-color:white;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding:10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div.buttons {
+	margin-top:30px;
+	width:100%;
+	margin-left:5px;
+}
+
+
+

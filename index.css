@@ -1,0 +1,152 @@
+paper-tabs::shadow #selectionBar {
+  background-color: #e51c23;
+  height:8px;
+}
+html
+{
+	font-family: RobotoDraft;
+	height:100%;
+}
+
+body
+{
+	margin:0; padding:0; height:100%; background-color: #eeeeef;
+}
+paper-tab.projectTab::shadow #ink {
+  color: #3f51b5;
+}
+paper-tab.hackathonTab::shadow #ink {
+  color: #795548;
+}
+paper-tab.workTab::shadow #ink {
+  color: #607d8b;
+}
+paper-button
+{
+	background: #1A237E ;
+	font-size:medium;
+	color: white;
+}
+core-toolbar
+{
+	background-color:#3f51b5; 
+}
+
+h1 
+{
+	
+	color: white;
+	font-size:x-large;
+}
+h2
+{
+	margin-top:20px; 
+	margin-left:15px;
+	font-style:italic;
+}
+h3
+{
+	display: inline-block; margin-left:10px; margin-right:10px; color:white; font-size:large;
+}
+p
+{
+	margin:20px;
+}
+paper-shadow.classStub {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#757575;
+	color:white;
+	font-size:medium;
+}
+core-icon.profileIcon {
+	height: 48px;
+	width: 48px;
+	color:white;
+}
+paper-fab
+{
+	background-color:#B71C1C;
+}
+
+paper-tab
+{
+	color:white;
+}
+paper-tabs
+{
+	background-color: #3f51b5
+}
+core-scroll-header-panel
+{
+	height:100%;
+}
+html /deep/ paper-radio-button.blue::shadow #onRadio {
+  background-color: #3F51B5;
+}
+html /deep/ paper-radio-button.blue::shadow #ink[checked] {
+  color: #3F51B5;
+}
+html /deep/ paper-radio-button.blue::shadow #ink {
+  color: #3F51B5;
+}
+html /deep/ paper-radio-button.blue::shadow #offRadio {
+  border-color: #3F51B5;
+}
+html /deep/ paper-radio-button.green::shadow #onRadio {
+  background-color: #4CAF50;
+}
+html /deep/ paper-radio-button.green::shadow #ink[checked] {
+  color: #4CAF50;
+}
+html /deep/ paper-radio-button.green::shadow #ink {
+  color: #4CAF50;
+}
+html /deep/ paper-radio-button.green::shadow #offRadio {
+  border-color: #4CAF50;
+}
+
+html /deep/ paper-radio-button.yellow::shadow #onRadio {
+  background-color: #FFEB3B;
+}
+html /deep/ paper-radio-button.yellow::shadow #ink[checked] {
+  color: #FFEB3B;
+}
+html /deep/ paper-radio-button.yellow::shadow #ink {
+  color: #FFEB3B;
+}
+html /deep/ paper-radio-button.yellow::shadow #offRadio {
+  border-color: #FFEB3B;
+}
+
+html /deep/ paper-radio-button.orange::shadow #onRadio {
+  background-color: #FF9800;
+}
+html /deep/ paper-radio-button.orange::shadow #ink[checked] {
+  color: #FF9800;
+}
+html /deep/ paper-radio-button.orange::shadow #ink {
+  color: #FF9800;
+}
+html /deep/ paper-radio-button.orange::shadow #offRadio {
+  border-color: #FF9800;
+}
+
+html /deep/ paper-radio-button.red::shadow #onRadio {
+  background-color: #F44336;
+}
+html /deep/ paper-radio-button.red::shadow #ink[checked] {
+  color: #F44336;
+}
+html /deep/ paper-radio-button.red::shadow #ink {
+  color: #F44336;
+}
+html /deep/ paper-radio-button.red::shadow #offRadio {
+  border-color: #F44336;
+}
+html /deep/ [autofocus] {
+      color: #3F51B5;
+    }
