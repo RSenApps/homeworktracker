@@ -90,7 +90,7 @@
 						while($row = mysqli_fetch_assoc($classes)) {
 							if ($row[$days[$day]])
 							{
-								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\','.$day.')" class="classStub" z="2">';
+								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\','.$day. ',' . $row['id'] . ')" class="classStub" z="2">';
 								echo $row['name'];
 								echo '</paper-shadow>';
 							}
@@ -132,14 +132,35 @@
 </body>
 <script>
 		
-			function newAssignment(cls, day) {
+			function newAssignment(cls, day, clsid) {
 				var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 				var dayText = days[day];
 				var heading = cls + " Assignment for " + dayText;
 				$("#newAssignmentDialog").attr("heading", heading);
-				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button class="blue" name="blue"></paper-radio-button><paper-radio-button class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" name="yellow"></paper-radio-button><paper-radio-button class="orange" name="orange"></paper-radio-button><paper-radio-button class="red" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button affirmative autofocus>Create</paper-button>';
+				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button class="blue" name="blue"></paper-radio-button><paper-radio-button class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" name="yellow"></paper-radio-button><paper-radio-button class="orange" name="orange"></paper-radio-button><paper-radio-button class="red" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button onclick="create(\'' + clsid + '\',' + day + ')" affirmative autofocus>Create</paper-button>';
 				$("#newAssignmentDialog").html(html);
 				document.querySelector('paper-action-dialog').toggle();
 			}
 			
+			function create(clsid, day) {
+				var summary = document.getElementById('summary');
+				var description = document.getElementById('description');
+				var status = 
+				 $.post("newassignment.php",
+				  {
+					summary:summary.value,
+					description: description.value
+					
+				  },
+				  function(data,status){
+						if (data == "success")
+						{
+							document.location.href = "index.php";
+						}
+						else {
+							passwordWrapper.error = data;
+							passwordWrapper.isInvalid = 1;
+						}
+				  });		
+			}
 		</script>
