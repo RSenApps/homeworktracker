@@ -39,8 +39,11 @@
 <link rel="import" href="bower_components/core-toolbar/core-toolbar.html"/>
 <link rel="stylesheet" type="text/css" href="index.css" />
 <link href="bower_components/paper-dialog/paper-dialog.html" rel="import">
-  <link href="bower_components/paper-dialog/paper-action-dialog.html" rel="import">
+<link href="bower_components/paper-toast/paper-toast.html" rel="import">
+<link href="bower_components/core-ajax/core-ajax.html" rel="import">
 
+  <link href="bower_components/paper-dialog/paper-action-dialog.html" rel="import">
+<link rel="import" href="bower_components/polymer/polymer.html">
 </head>
 <body fullbleed layout vertical unresolved>
 		<core-scroll-header-panel mode="waterfall-tall" condenses keepCondensedHeader flex>
@@ -79,18 +82,18 @@
 				<?php
 					$sql = "SELECT * FROM senanayake_classes WHERE user_id = '{$_SESSION['sess_userid']}'"; //contains query
 					$classes = mysqli_query($conn, $sql);
-					function printCardsForDay ($classes, $day)
+					function printCardsForDay ($classes, $day, $wkOffset)
 					{
-						printEmptyClassesForDay($classes, $day);
+						printEmptyClassesForDay($classes, $day, $wkOffset);
 						mysqli_data_seek($classes, 0);
 					}
-					function printEmptyClassesForDay($classes, $day)
+					function printEmptyClassesForDay($classes, $day, $wkOffset)
 					{
 						$days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
 						while($row = mysqli_fetch_assoc($classes)) {
 							if ($row[$days[$day]])
 							{
-								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\','.$day. ',' . $row['id'] . ')" class="classStub" z="2">';
+								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\',' . $day . ',' . $row['id'] . ',' . $wkOffset . ')" class="classStub" z="2">';
 								echo $row['name'];
 								echo '</paper-shadow>';
 							}
@@ -99,55 +102,130 @@
 				?>
 				<div style="float:left; width:20%">
 					<?php
-						printCardsForDay($classes, 0);
+						printCardsForDay($classes, 0, 0);
 					?>
 				</div>
 				<div style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 1);
+						printCardsForDay($classes, 1, 0);
 					?>
 				</div>
 				<div style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 2);
+						printCardsForDay($classes, 2, 0);
 					?>
 				</div>
 				<div style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 3);
+						printCardsForDay($classes, 3, 0);
 					?>
 				</div>
 				<div style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 4);
+						printCardsForDay($classes, 4, 0);
 					?>
 				</div>
 			</div>
 			
 		 </core-scroll-header-panel>
-		  <paper-action-dialog backdrop id="newAssignmentDialog" style="width:50%" transition="core-transition-center">
-			
+		 <polymer-element name="assignment-dialog" attributes="summary description progress clsid day wkOffset">
+			<template>
+				 
+				<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel>
+					<input id="summary" value="{{summary}}" is="core-input"/>
+				</paper-input-decorator>
+				<paper-input-decorator id="description_wrapper" label="Description" floatingLabel>
+					<input id="description" value="{{description}}" is="core-input"/>
+				</paper-input-decorator>
+				<div>
+				<p style="display:inline-block;vertical-align:middle">Status: </p>
+				<paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="{{progress}}">
+				<paper-radio-button class="blue" name="blue"></paper-radio-button>
+				<paper-radio-button class="green" name="green"></paper-radio-button>
+				<paper-radio-button class="yellow" name="yellow"></paper-radio-button>
+				<paper-radio-button class="orange" name="orange"></paper-radio-button>
+				<paper-radio-button class="red" name="red"></paper-radio-button>
+				</paper-radio-group>
+				</div>
+				<paper-button dismissive>Cancel</paper-button>
+				<paper-button on-click="{{doSend}}" affirmative autofocus>Create</paper-button>	
+				
+				
+				
+				<core-ajax id="ajax" method="POST" url="newassignment.php" params='{"summary":"{{summary}}", "description":"{{description}}", "progress":"{{progress}}", "clsid":"{{clsid}}", "day":"{{day}}", "wkOffset":"{{wkOffset}}"}' handleAs="text"></core-ajax>
+			</template>
+			<script>
+
+					Polymer({
+						doSend: function() {
+							this.$.ajax.addEventListener("core-response", function(e) {
+								if (e.detail.response == "success")
+								{
+									success();
+								}
+								else {
+									failed();
+								}
+							});
+							this.$.ajax.go();
+						},
+					   ready: function() {
+						 
+					   }
+					});
+					
+			  </script>
+		</polymer-element>
+		  <paper-action-dialog backdrop id="newAssignmentDialog" style="width:50%" transition="core-transition-center" closeSelector="[dismissive]">
+			<assignment-dialog id="polymerDialog">
+			</assignment-dialog>
 		</paper-action-dialog>
-		
-</body>
-<script>
-		
-			function newAssignment(cls, day, clsid) {
+		<paper-toast id="successtoast" text="Assignment added successfully!"></paper-toast>
+				<paper-toast id="failtoast" text="Adding assignment failed...">
+				  <div style="color: blue;" on-tap="{{retry}}">Retry</div>
+				</paper-toast>
+			<script>
+			var dialog;
+			var successtoast;
+			var failtoast;
+			function newAssignment(cls, day, clsid, wkOffset) {
 				var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 				var dayText = days[day];
 				var heading = cls + " Assignment for " + dayText;
 				$("#newAssignmentDialog").attr("heading", heading);
-				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button class="blue" name="blue"></paper-radio-button><paper-radio-button class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" name="yellow"></paper-radio-button><paper-radio-button class="orange" name="orange"></paper-radio-button><paper-radio-button class="red" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button onclick="create(\'' + clsid + '\',' + day + ')" affirmative autofocus>Create</paper-button>';
+				$("#polymerDialog").attr("status", "blue");
+				$("#polymerDialog").attr("day", day);
+				$("#polymerDialog").attr("clsid", clsid);
+				$("#polymerDialog").attr("wkOffset", wkOffset);
+				dialog = document.querySelector('paper-action-dialog');
+				successtoast = document.querySelector('#successtoast');
+				failtoast = document.querySelector('#failtoast');
+
+				/*
+				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button onClick="changeProgress(0)" class="blue" name="blue"></paper-radio-button><paper-radio-button onClick="changeProgress(1)" class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" onClick="changeProgress(2)" name="yellow"></paper-radio-button><paper-radio-button class="orange" onClick="changeProgress(3)" name="orange"></paper-radio-button><paper-radio-button class="red" onClick="changeProgress(4)" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button onclick="create(\'' + clsid + '\',' + day + ',' + wkOffset + ')" affirmative autofocus>Create</paper-button>';
 				$("#newAssignmentDialog").html(html);
+				*/
 				document.querySelector('paper-action-dialog').toggle();
 			}
-			
-			function create(clsid, day) {
+			function success() {
+				successtoast.show();
+				dialog.toggle();
+			}
+			function failed() {
+				failtoast.show();
+			}
+			/*
+			function create(clsid, day, wkOffset) {
 				var summary = document.getElementById('summary');
 				var description = document.getElementById('description');
-				var status = 
+			
+				$("#newAssignmentDialog").html("<p>" + $("#status").attr("selected") + "</p>");
+				
 				 $.post("newassignment.php",
 				  {
+					classes_id: clsid,
+					dayOfWeek: day,
+					wkOffset: wkOffset,
 					summary:summary.value,
 					description: description.value
 					
@@ -158,9 +236,11 @@
 							document.location.href = "index.php";
 						}
 						else {
-							passwordWrapper.error = data;
-							passwordWrapper.isInvalid = 1;
+							
 						}
 				  });		
 			}
+			*/
 		</script>
+		</body>
+</html>

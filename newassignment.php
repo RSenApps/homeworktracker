@@ -22,15 +22,17 @@
 	$sql = 'INSERT INTO senanayake_assignments (classes_id, due_date, summary, description, progress) VALUES';
 	$row = 0;
 
-	$classesid = mysqli_real_escape_string($conn, $_POST['classes_id']);
-	$duedate = mysqli_real_escape_string($conn,$_POST['due_date']);
+	$classesid = mysqli_real_escape_string($conn, $_POST['clsid']);
+	$dayOfWeek = mysqli_real_escape_string($conn,$_POST['day']);
+	$wkOffset = mysqli_real_escape_string($conn,$_POST['wkOffset']);
 	$summary = mysqli_real_escape_string($conn, $_POST['summary']);
 	$description = mysqli_real_escape_string($conn, $_POST['description']);
 	$progress = mysqli_real_escape_string($conn, $_POST['progress']);
+	$duedate = date('Y-m-d',time()+( 1 - date('w'))*24*3600);
 	$sql .= " ('$classesid', '$duedate', '$summary', '$description', '$progress');";	
 	
 	$result = mysqli_query($conn, $sql);
-	
+	echo mysqli_error($conn);
 	if($result)
 	{
 		echo "success";
