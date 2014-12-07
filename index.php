@@ -147,7 +147,7 @@
 				<paper-radio-button class="red" name="red"></paper-radio-button>
 				</paper-radio-group>
 				</div>
-				<paper-button dismissive>Cancel</paper-button>
+				<paper-button on-click="{{closeDialog}}" dismissive>Cancel</paper-button>
 				<paper-button on-click="{{doSend}}" affirmative autofocus>Create</paper-button>	
 				
 				
@@ -160,6 +160,9 @@
 						doSend: function() {
 							
 							this.$.ajax.go();
+						},
+						closeDialog: function() {
+							closeDialog();
 						},
 					   ready: function() {
 						 this.$.ajax.addEventListener("core-response", function(e) {
@@ -177,29 +180,30 @@
 			  </script>
 		</polymer-element>
 		  <paper-action-dialog backdrop id="newAssignmentDialog" style="width:50%" transition="core-transition-center" closeSelector="[dismissive]">
-			<assignment-dialog id="polymerDialog">
-			</assignment-dialog>
+			
 		</paper-action-dialog>
 		<paper-toast id="successtoast" text="Assignment added successfully!"></paper-toast>
 				<paper-toast id="failtoast" text="Adding assignment failed...">
-				  <div style="color: blue;" on-tap="{{retry}}">Retry</div>
 				</paper-toast>
 			<script>
 			var dialog;
 			var successtoast;
 			var failtoast;
 			dialog = document.querySelector('paper-action-dialog');
+			
 				successtoast = document.querySelector('#successtoast');
 				failtoast = document.querySelector('#failtoast');
 			function newAssignment(cls, day, clsid, wkOffset) {
+				$("#newAssignmentDialog").html('<assignment-dialog id="polymerDialog"></assignment-dialog>');
+				polymerDialog = $("#polymerDialog");
 				var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 				var dayText = days[day];
 				var heading = cls + " Assignment for " + dayText;
 				$("#newAssignmentDialog").attr("heading", heading);
-				$("#polymerDialog").attr("status", "blue");
-				$("#polymerDialog").attr("day", day);
-				$("#polymerDialog").attr("clsid", clsid);
-				$("#polymerDialog").attr("wkOffset", wkOffset);
+				polymerDialog.attr("progress", "blue");
+				polymerDialog.attr("day", day);
+				polymerDialog.attr("clsid", clsid);
+				polymerDialog.attr("wkOffset", wkOffset);
 				
 
 				/*
@@ -214,6 +218,9 @@
 			}
 			function failed() {
 				failtoast.show();
+			}
+			function closeDialog() {
+				dialog.toggle();
 			}
 			/*
 			function create(clsid, day, wkOffset) {
