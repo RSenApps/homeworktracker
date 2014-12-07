@@ -158,7 +158,11 @@
 
 					Polymer({
 						doSend: function() {
-							this.$.ajax.addEventListener("core-response", function(e) {
+							
+							this.$.ajax.go();
+						},
+					   ready: function() {
+						 this.$.ajax.addEventListener("core-response", function(e) {
 								if (e.detail.response == "success")
 								{
 									success();
@@ -167,10 +171,6 @@
 									failed();
 								}
 							});
-							this.$.ajax.go();
-						},
-					   ready: function() {
-						 
 					   }
 					});
 					
@@ -188,6 +188,9 @@
 			var dialog;
 			var successtoast;
 			var failtoast;
+			dialog = document.querySelector('paper-action-dialog');
+				successtoast = document.querySelector('#successtoast');
+				failtoast = document.querySelector('#failtoast');
 			function newAssignment(cls, day, clsid, wkOffset) {
 				var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 				var dayText = days[day];
@@ -197,9 +200,7 @@
 				$("#polymerDialog").attr("day", day);
 				$("#polymerDialog").attr("clsid", clsid);
 				$("#polymerDialog").attr("wkOffset", wkOffset);
-				dialog = document.querySelector('paper-action-dialog');
-				successtoast = document.querySelector('#successtoast');
-				failtoast = document.querySelector('#failtoast');
+				
 
 				/*
 				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button onClick="changeProgress(0)" class="blue" name="blue"></paper-radio-button><paper-radio-button onClick="changeProgress(1)" class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" onClick="changeProgress(2)" name="yellow"></paper-radio-button><paper-radio-button class="orange" onClick="changeProgress(3)" name="orange"></paper-radio-button><paper-radio-button class="red" onClick="changeProgress(4)" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button onclick="create(\'' + clsid + '\',' + day + ',' + wkOffset + ')" affirmative autofocus>Create</paper-button>';
