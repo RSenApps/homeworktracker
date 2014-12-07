@@ -50,7 +50,7 @@
 <body fullbleed layout vertical unresolved>
 		<core-scroll-header-panel mode="waterfall-tall" condenses keepCondensedHeader flex>
 		<core-toolbar class="medium-tall">
-			<core-icon class="profileIcon" class="top" icon="account-circle"></core-icon>
+			<core-icon class="profileIcon" class="top" icon="assignment-turned-in"></core-icon>
 			<?php
 				$sql = "SELECT username FROM senanayake_users WHERE id = '" . mysqli_real_escape_string ($conn, $_SESSION['sess_userid']) . "' limit 1"; 
 				$result = mysqli_query($conn, $sql);
