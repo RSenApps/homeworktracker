@@ -28,7 +28,7 @@
 	<title>Homework Tracker</title>
 <link rel="icon" 
       type="image/png" 
-      href="favicon.ico">
+      href="favicon.png">
 	<!-- 1. Load platform.js for polyfill support. -->
     <script type="text/javascript" src="bower_components/platform/platform.js"></script>
 
