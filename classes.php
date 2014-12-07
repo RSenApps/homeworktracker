@@ -15,7 +15,9 @@
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- 1. Load platform.js for polyfill support. -->
     <script type="text/javascript" src="bower_components/platform/platform.js"></script>
-
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.ico">
     <!-- 2. Use an HTML Import to bring in the element. -->
 	 <link rel="import" href="bower_components/font-roboto/roboto.html"/>
     <link rel="import" href="bower_components/paper-elements/paper-elements.html"/>

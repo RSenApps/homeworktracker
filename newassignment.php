@@ -28,6 +28,7 @@
 	$summary = mysqli_real_escape_string($conn, $_POST['summary']);
 	$description = mysqli_real_escape_string($conn, $_POST['description']);
 	$progress = mysqli_real_escape_string($conn, $_POST['progress']);
+	$classname = mysqli_real_escape_string($conn, $_POST['classname']);
 	$duedate = date('Y-m-d',time()+( ($dayOfWeek+1 + 7*$wkOffset) - date('w'))*24*3600);
 	$sql .= " ('$classesid', '$duedate', '$summary', '$description', '$progress');";	
 	
@@ -35,7 +36,7 @@
 	echo mysqli_error($conn);
 	if($result)
 	{
-		echo "success,$dayOfWeek,$summary,$progress";
+		echo "success,$dayOfWeek, $summary,$progress,$classname";
 	}
 	else {
 		echo "failed";

@@ -5,7 +5,9 @@
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<title>Login - Homework Tracker</title>
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="icon" 
+      type="image/png" 
+      href="favicon.ico">
 	<!-- 1. Load platform.js for polyfill support. -->
     <script type="text/javascript" src="bower_components/platform/platform.js"></script>
 
@@ -42,7 +44,7 @@
 	var password = document.getElementById('password');
 	var passwordWrapper = document.getElementById('password_wrapper');
 	function loginButton() {
-		var hash = CryptoJS.SHA3(password.value);
+		var hash = CryptoJS.SHA3(password.value); //how about we don't store passwords in plain text...
 			 $.post("login.php",
 			  {
 				username:username.value,

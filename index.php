@@ -26,7 +26,9 @@
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<title>Homework Tracker</title>
-	<link rel="shortcut icon" href="favicon.ico">
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.ico">
 	<!-- 1. Load platform.js for polyfill support. -->
     <script type="text/javascript" src="bower_components/platform/platform.js"></script>
 
@@ -53,7 +55,7 @@
 				$sql = "SELECT username FROM senanayake_users WHERE id = '" . mysqli_real_escape_string ($conn, $_SESSION['sess_userid']) . "' limit 1"; 
 				$result = mysqli_query($conn, $sql);
 				$username = mysqli_fetch_object($result)->username;
-				echo "<div flex=\"\"><h1>" . htmlspecialchars($username) . " Homework</h1></div>";
+				echo "<div flex=\"\"><h1>" . htmlspecialchars($username) . "'s Homework</h1></div>";
 			?>
 			<a href="classes.php"><paper-button borderless class="top" sink>Add Classes</paper-button></a>
 			<paper-button borderless class="top" sink>Edit Classes</paper-button>
@@ -99,7 +101,7 @@
 						while($row = mysqli_fetch_assoc($classes)) {
 							if ($row[$days[$day]] and !in_array($row['id'], $classesWithAssignment))
 							{
-								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\',' . $day . ',' . $row['id'] . ',' . $wkOffset . ')" class="classStub" z="2">';
+								echo '<paper-shadow id="cls' . $day. ',' . $row['name'] . '" onclick="newAssignment(\'' . $row['name'] . '\',' . $day . ',' . $row['id'] . ',' . $wkOffset . ')" class="classStub" z="2">';
 								echo $row['name'];
 								echo '</paper-shadow>';
 							}
@@ -147,7 +149,7 @@
 			</div>
 			
 		 </core-scroll-header-panel>
-		 <polymer-element name="assignment-dialog" attributes="summary description progress clsid day wkOffset">
+		 <polymer-element name="assignment-dialog" attributes="summary description progress clsid day wkOffset classname">
 			<template>
 				 
 				<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel>
@@ -171,7 +173,7 @@
 				
 				
 				
-				<core-ajax id="ajax" method="POST" url="newassignment.php" params='{"summary":"{{summary}}", "description":"{{description}}", "progress":"{{progress}}", "clsid":"{{clsid}}", "day":"{{day}}", "wkOffset":"{{wkOffset}}"}' handleAs="text"></core-ajax>
+				<core-ajax id="ajax" method="POST" url="newassignment.php" params='{"summary":"{{summary}}", "description":"{{description}}", "progress":"{{progress}}", "clsid":"{{clsid}}", "day":"{{day}}", "wkOffset":"{{wkOffset}}", "classname":"{{classname}}"}' handleAs="text"></core-ajax>
 			</template>
 			<script>
 			
@@ -223,9 +225,10 @@
 				polymerDialog.attr("day", day);
 				polymerDialog.attr("clsid", clsid);
 				polymerDialog.attr("wkOffset", wkOffset);
-				
+				polymerDialog.attr("classname", cls);
 
-				/*
+
+				/* THANK GOODNESS I didn't have to end up doing it this way...
 				var html = '<paper-input-decorator id="summary_wrapper" label="Summary" error = "Summary cannot be empty" floatingLabel><input id="summary" is="core-input"/></paper-input-decorator><paper-input-decorator id="description_wrapper" label="Description" floatingLabel><textarea rows="4" id="description" is="core-input"/></paper-input-decorator><div><p style="display:inline-block;vertical-align:middle">Status: </p><paper-radio-group id="status" style="display:inline-block; vertical-align:middle;" selected="blue"><paper-radio-button onClick="changeProgress(0)" class="blue" name="blue"></paper-radio-button><paper-radio-button onClick="changeProgress(1)" class="green" name="green"></paper-radio-button><paper-radio-button class="yellow" onClick="changeProgress(2)" name="yellow"></paper-radio-button><paper-radio-button class="orange" onClick="changeProgress(3)" name="orange"></paper-radio-button><paper-radio-button class="red" onClick="changeProgress(4)" name="red"></paper-radio-button></paper-radio-group></div><paper-button dismissive>Cancel</paper-button><paper-button onclick="create(\'' + clsid + '\',' + day + ',' + wkOffset + ')" affirmative autofocus>Create</paper-button>';
 				$("#newAssignmentDialog").html(html);
 				*/
@@ -234,8 +237,10 @@
 			function success(response) {
 				successtoast.show();
 				dialog.toggle();
-				responseArray = response.split(","); //0 - success, 1-day, 2-summary, 3-progress
-				$("#col" + responseArray[1]).prepend('<paper-shadow class="assignment'+responseArray[3] + '" z="2">' + responseArray[2] + "</paper-shadow>");
+				responseArray = response.split(","); //0 - success, 1-day, 2-summary, 3-progress, 4-classname
+				$("#col" + responseArray[1]).prepend('<paper-shadow class="assignment'+responseArray[3] + '" z="2">' + responseArray[4] + ": " + responseArray[2] + "</paper-shadow>");
+				var toRemove = document.getElementById("cls" + responseArray[1] + "," + responseArray[4]);
+				toRemove.parentElement.removeChild(toRemove);
 			}
 			function failed() {
 				failtoast.show();
@@ -243,7 +248,7 @@
 			function closeDialog() {
 				dialog.toggle();
 			}
-			/*
+			/* Replace by Polymer ajax
 			function create(clsid, day, wkOffset) {
 				var summary = document.getElementById('summary');
 				var description = document.getElementById('description');
