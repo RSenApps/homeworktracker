@@ -35,7 +35,7 @@
 	echo mysqli_error($conn);
 	if($result)
 	{
-		echo "success";
+		echo "success,$dayOfWeek,$summary,$progress";
 	}
 	else {
 		echo "failed";

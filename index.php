@@ -82,16 +82,22 @@
 				<?php
 					$sql = "SELECT * FROM senanayake_classes WHERE user_id = '{$_SESSION['sess_userid']}'"; //contains query
 					$classes = mysqli_query($conn, $sql);
-					function printCardsForDay ($classes, $day, $wkOffset)
+					$sqlassignments = "SELECT * FROM senanayake_assignments LEFT JOIN senanayake_classes ON senanayake_assignments.classes_id=senanayake_classes.id WHERE classes_id IN (SELECT id FROM senanayake_classes WHERE user_id = '{$_SESSION['sess_userid']}')";
+					$assignments = mysqli_query($conn, $sqlassignments);
+					function printCardsForDay ($classes, $assignments, $day, $wkOffset)
 					{
-						printEmptyClassesForDay($classes, $day, $wkOffset);
+						$classesWithAssignment = array();
+						printAssignmentsForDay($assignments, $day, $wkOffset, $classesWithAssignment);
+						printEmptyClassesForDay($classes, $day, $wkOffset, $classesWithAssignment);
 						mysqli_data_seek($classes, 0);
+						mysqli_data_seek($assignments, 0);
+
 					}
-					function printEmptyClassesForDay($classes, $day, $wkOffset)
+					function printEmptyClassesForDay($classes, $day, $wkOffset, $classesWithAssignment)
 					{
 						$days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
 						while($row = mysqli_fetch_assoc($classes)) {
-							if ($row[$days[$day]])
+							if ($row[$days[$day]] and !in_array($row['id'], $classesWithAssignment))
 							{
 								echo '<paper-shadow onclick="newAssignment(\'' . $row['name'] . '\',' . $day . ',' . $row['id'] . ',' . $wkOffset . ')" class="classStub" z="2">';
 								echo $row['name'];
@@ -99,30 +105,43 @@
 							}
 						}
 					}
+					function printAssignmentsForDay($assignments, $day, $wkOffset, &$classesWithAssignment)
+					{
+						$duedate = date('Y-m-d',time()+( ($day+1 + 7*$wkOffset) - date('w'))*24*3600);
+						while($row = mysqli_fetch_assoc($assignments)) {
+							if ($row['due_date']==$duedate)
+							{
+								array_push($classesWithAssignment, $row['classes_id']);
+								echo '<paper-shadow class="assignment'. $row['progress'] . '" z="2">';
+								echo $row['name'] . ": " . $row['summary'];
+								echo '</paper-shadow>';
+							}
+						}
+					}
 				?>
-				<div style="float:left; width:20%">
+				<div id="col0" style="float:left; width:20%">
 					<?php
-						printCardsForDay($classes, 0, 0);
+						printCardsForDay($classes, $assignments, 0, 0);
 					?>
 				</div>
-				<div style="float:left; width:20%">
+				<div id="col1" style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 1, 0);
+						printCardsForDay($classes,$assignments, 1, 0);
 					?>
 				</div>
-				<div style="float:left; width:20%">
+				<div id="col2" style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 2, 0);
+						printCardsForDay($classes,$assignments, 2, 0);
 					?>
 				</div>
-				<div style="float:left; width:20%">
+				<div id="col3" style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 3, 0);
+						printCardsForDay($classes,$assignments, 3, 0);
 					?>
 				</div>
-				<div style="float:left; width:20%">
+				<div id="col4" style="float:left; width:20%">
 				<?php
-						printCardsForDay($classes, 4, 0);
+						printCardsForDay($classes,$assignments, 4, 0);
 					?>
 				</div>
 			</div>
@@ -155,7 +174,7 @@
 				<core-ajax id="ajax" method="POST" url="newassignment.php" params='{"summary":"{{summary}}", "description":"{{description}}", "progress":"{{progress}}", "clsid":"{{clsid}}", "day":"{{day}}", "wkOffset":"{{wkOffset}}"}' handleAs="text"></core-ajax>
 			</template>
 			<script>
-
+			
 					Polymer({
 						doSend: function() {
 							
@@ -166,9 +185,9 @@
 						},
 					   ready: function() {
 						 this.$.ajax.addEventListener("core-response", function(e) {
-								if (e.detail.response == "success")
+								if (e.detail.response.substring(0,7)=="success")
 								{
-									success();
+									success(e.detail.response);
 								}
 								else {
 									failed();
@@ -212,9 +231,11 @@
 				*/
 				document.querySelector('paper-action-dialog').toggle();
 			}
-			function success() {
+			function success(response) {
 				successtoast.show();
 				dialog.toggle();
+				responseArray = response.split(","); //0 - success, 1-day, 2-summary, 3-progress
+				$("#col" + responseArray[1]).prepend('<paper-shadow class="assignment'+responseArray[3] + '" z="2">' + responseArray[2] + "</paper-shadow>");
 			}
 			function failed() {
 				failtoast.show();

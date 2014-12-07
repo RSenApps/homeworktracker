@@ -10,7 +10,7 @@ html
 
 body
 {
-	margin:0; padding:0; height:100%; background-color: #eeeeef;
+	margin:0; padding:0; height:100%; background-color: #eeeeef; word-wrap: break-word;
 }
 paper-tab.projectTab::shadow #ink {
   color: #3f51b5;
@@ -51,6 +51,7 @@ h3
 p
 {
 	margin:20px;
+	
 }
 paper-shadow.classStub {
 	margin-left: 20px;
@@ -59,6 +60,56 @@ paper-shadow.classStub {
 	margin-top: 15px;
 	margin-bottom: 15px;
 	background-color:#757575;
+	color:white;
+	font-size:medium;
+}
+paper-shadow.assignmentblue {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#3F51B5;
+	color:white;
+	font-size:medium;
+}
+paper-shadow.assignmentgreen {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#4CAF50;
+	color:white;
+	font-size:medium;
+}
+paper-shadow.assignmentyellow {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#FFEB3B;
+	color:black;
+	font-size:medium;
+}
+paper-shadow.assignmentorange {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#FF9800;
+	color:black;
+	font-size:medium;
+}
+paper-shadow.assignmentred {
+	margin-left: 20px;
+	margin-right: 20px;
+	padding:5px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	background-color:#F44336;
 	color:white;
 	font-size:medium;
 }
