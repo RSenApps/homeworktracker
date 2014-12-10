@@ -1,3 +1,8 @@
+![](mainscrenshot.PNG) 
+![](dialogscreenshot.png)
+![](loginscreenshot.PNG)
+![](addclassesscreenshot.PNG)
+
 #Functional Overview:
 Homework tracking the way it should be as a HTML/CSS/Polymer/PHP/MySql web app. The most important thing is to build a tracking system that I would use, but eventually will be expanded to fit the needs of a high school/college student who has to manage assignments from multiple classes and can’t afford to “work one day at a time” and needs to be able to have more control over their organization.
 
